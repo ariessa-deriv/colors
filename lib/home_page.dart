@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () => navigateToPickColorPage(context),
-          child: const Icon(Icons.edit)),
+          child: const Icon(Icons.colorize)),
     );
     ;
   }
