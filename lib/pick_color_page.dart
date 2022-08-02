@@ -12,9 +12,40 @@ class _PickColorPageState extends State<PickColorPage> {
   double currentGreenValue = 0;
   double currentBlueValue = 0;
   Color currentRGBValue = const Color.fromRGBO(0, 0, 0, 1);
+  int currentSavedIndex = 0;
+
+  List<Color> savedColors =
+      List.filled(8, const Color.fromRGBO(255, 255, 255, 0));
+
+  void saveColorToSwatch(Color colorToSave) {
+    // Check if color swatch is full or not
+    if (currentSavedIndex > 7) {
+      setState(() {
+        print(currentSavedIndex);
+        currentSavedIndex = 0;
+        savedColors[currentSavedIndex] = colorToSave;
+      });
+    }
+    // Check the current index of color swatch
+    else {
+      if (currentSavedIndex == 0) {
+        setState(() {
+          savedColors[currentSavedIndex] = colorToSave;
+          currentSavedIndex += 1;
+        });
+      } else {
+        setState(() {
+          savedColors[currentSavedIndex] = colorToSave;
+          currentSavedIndex += 1;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    int indexToSaveColor;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pick your color'),
@@ -54,6 +85,24 @@ class _PickColorPageState extends State<PickColorPage> {
                 });
               }),
           const SizedBox(height: 50),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 8,
+              children: List.generate(savedColors.length, (index) {
+                return Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: savedColors[index],
+                      shape: BoxShape.rectangle,
+                      border: Border.all(width: 2, color: Colors.grey)),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 50),
           Text(
             'Selected color',
             style: TextStyle(
@@ -71,32 +120,7 @@ class _PickColorPageState extends State<PickColorPage> {
           const SizedBox(height: 30),
           ElevatedButton(
               child: const Text('Select this color'),
-              onPressed: () => {
-                    Navigator.of(context).pop(),
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              content: Row(
-                                children: [
-                                  const Text('You have picked '),
-                                  Container(
-                                    height: 15,
-                                    width: 15,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: currentRGBValue),
-                                  )
-                                ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, 'Okay'),
-                                  child: const Text('Okay'),
-                                ),
-                              ],
-                            ))
-                  }),
+              onPressed: () => {saveColorToSwatch(currentRGBValue)}),
         ],
       ),
     );
